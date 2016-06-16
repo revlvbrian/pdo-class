@@ -20,9 +20,9 @@
         }
         public function fetchAllTodo($pdo)
         {
-            $sql= "SELECT * FROM List";
-            $stmt = $pdo->prepare($sql);
+            $stmt = $pdo->query('SELECT * FROM List');
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
         }
     }
 
@@ -36,29 +36,41 @@
     <meta charset="UTF-8">
     <title>Todo</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" type="text/CSS" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/CSS" href="bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
 
-    <div class="wrapper">
+    <div class="container">
         <div class="form-container">
-            <h1>To Do List <i class="fa fa-edit"></i></h1>
-            <form class="form" action="insert.php" method="POST">
-                <label>Title: </label><input type="text" name="title" value/>
-                <label>Description: </label><textarea name="description" rows="5" cols="40"></textarea>
-                <input type="submit" value="add" class="uppercase" name="submit">
+            <h2>To Do List <i class="fa fa-edit"></i></h2>
+            <form role="form" class="form" action="insert.php" method="POST">
+                <div class="form-group">
+                    <label for="title">Title: </label>
+                    <input class="form-control" type="text" name="title" value/>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description: </label>
+                    <textarea class="form-control" name="description" rows="5" cols="40"></textarea>
+                </div>
+                <input type="submit" value="add" class="btn btn-success uppercase" name="submit">
             </form>
+
             <?php
                 foreach($todo->fetchAllTodo($pdo) as $row)
                 {
-                    echo "<div class='wrapper'><form action='delete.php' method='POST' class='form-display'>";
-                    echo "<label for=''>ID: </label><input type='text' name='updateid' value='$row[id]'>";
-                    echo "<label for=''>Title: </label><input type='text' name='updatetitle' value='$row[title]'>";
-                    echo "<label for=''>Description: </label><input type='text' name='updatedesc' value='$row[description]'>";
-                    echo "<label for=''>Date: </label><input type='text' name='updated_date' value='$row[created_date]'>";
-                    echo "<a class='' href='edit.php?id=$row[id]'>Update</a>";
-                    echo "<a class='' href='delete.php?id=$row[id]'>Delete</a>";
-                    echo "</form></div>";
+                    echo "<form role='form'>";
+                    echo "<div class='panel panel-default'>";
+                    echo "<div class='panel-body pull-right'><label>Date: </label> $row[created_date] </div>";
+                    echo "<div class='panel-heading'><h4><label>Title: </label> $row[title] </h4></div>";
+                    echo "<div class='panel-body desc'><h4>Description:</h4></div>";
+                    echo "<div class='panel-body'>$row[description]</div>";
+                    echo "<a class='button btn btn-danger form-control' href=delete.php?id=$row[id]>Delete</a>";
+                    echo "<a class='button btn btn-primary form-control' href=update.php?id=$row[id]>Edit</a><br>";
+                    echo "</div>";
+                    echo "</form>";
                 }
             ?>
         </div>

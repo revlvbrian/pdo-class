@@ -2,9 +2,9 @@
 
 require_once('lib.php');
 
-deleteById($_POST['id']);
+deleteById($_GET['id']);
 
 header("Location: index.php");
-exit();
+exit;
 
 ?>
